@@ -57,8 +57,11 @@ if [ "$OS" = "Linux" ]; then
     if ! grep -qx "$ZSH_PATH" /etc/shells; then
       echo "$ZSH_PATH" | sudo tee -a /etc/shells > /dev/null
     fi
-    chsh -s "$ZSH_PATH"
-    info "Set default shell → zsh"
+    if sudo chsh -s "$ZSH_PATH" "$(whoami)" 2>/dev/null; then
+      info "Set default shell → zsh"
+    else
+      warn "Could not change default shell (chsh failed) — run manually: chsh -s $ZSH_PATH"
+    fi
   else
     info "zsh is already the default shell"
   fi
