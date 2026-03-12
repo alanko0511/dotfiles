@@ -43,30 +43,6 @@ backup_and_copy() {
   info "Installed $(basename "$dest")"
 }
 
-# ── Install zsh (Linux only) ────────────────────────────────────────
-if [ "$OS" = "Linux" ]; then
-  if command -v zsh &>/dev/null; then
-    info "zsh already installed"
-  else
-    sudo apt update && sudo apt install zsh -y
-    info "Installed zsh via apt"
-  fi
-
-  if [ "$(basename "$SHELL")" != "zsh" ]; then
-    ZSH_PATH="$(command -v zsh)"
-    if ! grep -qx "$ZSH_PATH" /etc/shells; then
-      echo "$ZSH_PATH" | sudo tee -a /etc/shells > /dev/null
-    fi
-    if sudo chsh -s "$ZSH_PATH" "$(whoami)" 2>/dev/null; then
-      info "Set default shell → zsh"
-    else
-      warn "Could not change default shell (chsh failed) — run manually: chsh -s $ZSH_PATH"
-    fi
-  else
-    info "zsh is already the default shell"
-  fi
-fi
-
 # ── Install gh CLI ──────────────────────────────────────────────────
 if command -v gh &>/dev/null; then
   info "gh CLI already installed"
@@ -96,8 +72,6 @@ else
 fi
 
 # ── Install Config Files ────────────────────────────────────────────
-backup_and_copy "$DOTFILES_DIR/zsh/.zshrc"     "$HOME/.zshrc"
-backup_and_copy "$DOTFILES_DIR/zsh/.zshenv"    "$HOME/.zshenv"
 backup_and_copy "$DOTFILES_DIR/git/.gitconfig"  "$HOME/.gitconfig"
 
 # ── OS-Specific: Credential Helper ──────────────────────────────────
@@ -115,10 +89,8 @@ esac
 # ── Summary ──────────────────────────────────────────────────────────
 printf "\n${BOLD}Done!${RESET} Installed:\n"
 printf "  • gh CLI\n"
-printf "  • ~/.zshrc\n"
-printf "  • ~/.zshenv\n"
 printf "  • ~/.gitconfig\n"
 if $BACKED_UP; then
   printf "\nPrevious files backed up to ${YELLOW}%s${RESET}\n" "$BACKUP_DIR"
 fi
-printf "\nRestart your shell or run ${BOLD}source ~/.zshrc${RESET} to apply changes.\n"
+printf "\nDone!\n"
