@@ -1,0 +1,16 @@
+[user]
+	name = Alan Ko
+	email = 10248668+alankosm@users.noreply.github.com
+[init]
+	defaultBranch = main
+[pull]
+	rebase = true
+[push]
+	autoSetupRemote = true
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[pack]
+	window = 1
